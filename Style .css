@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+#quote {
+    font-size: 22px;
+    margin-bottom: 20px;
+    width: 80%;
+    text-align: center;
+}
+
+textarea {
+    width: 80%;
+    height: 150px;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 25px;
+    font-size: 18px;
+    background: #00bcd4;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.results {
+    margin-top: 25px;
+    font-size: 20px;
+}
