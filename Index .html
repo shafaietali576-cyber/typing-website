@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Typing Pro — Neon Test</title>
+<style>
+  :root{
+    --bg:#09070b;
+    --card:#0f1220;
+    --muted:#98a0c0;
+    --accent:#6ee7ff;
+    --accent2:#b86bff;
+    --danger:#ff6b6b;
+    --glass:rgba(255,255,255,0.03);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  html,body{height:100%;margin:0;background:linear-gradient(120deg,#020207 0%, #080815 50%, #05030a 100%);color:#e8eefb}
+  .wrap{max-width:980px;margin:36px auto;padding:22px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03)}
+  header{display:flex;gap:16px;align-items:center}
+  .logo{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#071023}
+  h1{font-size:20px;margin:0}
+  p.lead{margin:4px 0 14px;color:var(--muted);font-size:13px}
+
+  .card{background:var(--card);padding:18px;border-radius:10px;margin-top:12px;border:1px solid rgba(255,255,255,0.02)}
+  #sample{padding:16px;border-radius:8px;background:linear-gradient(180deg, rgba(110,231,255,0.03), rgba(184,107,255,0.02));line-height:1.7;font-size:18px;color:#dff6ff;min-height:72px}
+  #sample .char{padding:0 1px;border-radius:3px}
+  .char.correct{background:linear-gradient(90deg, rgba(110,231,255,0.06), rgba(110,231,255,0.03));color:#bff6ff}
+  .char.incorrect{background:linear-gradient(90deg, rgba(255,107,107,0.06), rgba(255,107,107,0.02));color:#ffc7c7}
+  .char.current{outline:2px solid rgba(110,231,255,0.08);box-shadow:0 0 10px rgba(110,231,255,0.06) inset}
+  .controls{display:flex;gap:10px;margin-top:12px;align-items:center;flex-wrap:wrap}
+  select,input[type=number]{background:var(--glass);border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:8px;color:var(--muted)}
+  button{background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;color:#071023;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(107,0,255,0.12)}
+  button.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)}
+  .stats{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+  .stat{min-width:110px;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.02)}
+  .stat .label{font-size:12px;color:var(--muted)}
+  .stat .value{font-size:18px;font-weight:700;margin-top:6px}
+
+  .inputWrap{margin-top:12px}
+  textarea#input{width:100%;min-height:120px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));color:#e8eefb;font-size:16px;resize:vertical}
+  .footer{margin-top:14px;color:var(--muted);font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+  @media(max-width:720px){
+    .wrap{margin:12px;padding:14px}
+    header{gap:10px}
+    .logo{width:44px;height:44px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <div class="logo">TP</div>
+      <div>
+        <h1>Typing Pro — Neon</h1>
+        <p class="lead">Fast, responsive typing test with live WPM & accuracy. Mobile friendly.</p>
+      </div>
+    </header>
+
+    <div class="card" aria-live="polite">
+      <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+        <div style="flex:1;min-width:240px">
+          <div style="font-size:13px;color:var(--muted)">Test mode</div>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+            <select id="mode">
+              <option value="time">Timed</option>
+              <option value="words">Words</option>
+            </select>
+            <select id="timeSelect">
+              <option value="15">15s</option>
+              <option value="30" selected>30s</option>
+              <option value="60">60s</option>
+            </select>
+
+            <select id="difficulty">
+              <option value="short">Short sentences</option>
+              <option value="medium" selected>Medium</option>
+              <option value="long">Long paragraphs</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center">
+          <button id="startBtn">Start</button>
+          <button id="resetBtn" class="ghost">Reset</button>
+          <button id="shareBtn" class="ghost" title="Copy share link">Share</button>
+        </div>
+      </div>
+
+      <div id="sample" style="margin-top:12px" aria-label="sample text"></div>
+
+      <div class="inputWrap">
+        <textarea id="input" placeholder="Type here after pressing Start..." aria-label="typing input" disabled></textarea>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Time</div>
+          <div id="time" class="value">0s</div>
+        </div>
+        <div class="stat">
+          <div class="label">WPM</div>
+          <div id="wpm" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Accuracy</div>
+          <div id="acc" class="value">0%</div>
+        </div>
+        <div class="stat">
+          <div class="label">Mistakes</div>
+          <div id="mist" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Progress</div>
+          <div id="prog" class="value">0%</div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div id="message">Tip: Choose mode & press Start. Typing begins instantly in timed mode.</div>
+        <div style="color:var(--muted);font-size:13px">By — Typing Pro</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // Text pools
+  const texts = {
+    short: [
+      "The quick brown fox jumps over the lazy dog.",
+      "Typing fast builds skill and confidence.",
+      "Practice daily to get better."
+    ],
+    medium: [
+      "The quick brown fox jumps over the lazy dog. Practice daily and measure your progress to improve speed and accuracy.",
+      "Fast typing requires focus and familiarization with the keyboard layout. Keep practicing for small improvements each day.",
+      "Consistency beats intensity: short daily practice beats occasional long sessions. Type with purpose and track your metrics."
+    ],
+    long: [
+      "Typing quickly and accurately is a learned skill. Regular, focused practice with timed exercises helps you gain muscle memory and confidence. Use varied texts to avoid pattern learning and to improve real-world typing.",
+      "Focus on accuracy first, speed will follow. Use short bursts of practice every day. Track your mistakes and work on common problem letters to improve overall typing performance."
+    ]
+  };
+
+  const sampleEl = document.getElementById('sample');
+  const input = document.getElementById('input');
+  const startBtn = document.getElementById('startBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const shareBtn = document.getElementById('shareBtn');
+  const modeSel = document.getElementById('mode');
+  const timeSel = document.getElementById('timeSelect');
+  const diffSel = document.getElementById('difficulty');
+
+  const timeEl = document.getElementById('time');
+  const wpmEl = document.getElementById('wpm');
+  const accEl = document.getElementById('acc');
+  const mistEl = document.getElementById('mist');
+  const progEl = document.getElementById('prog');
+  const msg = document.getElementById('message');
+
+  let currentText = "";
+  let chars = []; // array of chars
+  let started = false;
+  let startTime = 0;
+  let timer = null;
+  let totalTime = parseInt(timeSel.value,10);
+  let mistakes = 0;
+  let typedChars = 0;
+  let targetChars = 0;
+
+  function pickText() {
+    const diff = diffSel.value;
+    const pool = texts[diff] || texts.medium;
+    const txt = pool[Math.floor(Math.random()*pool.length)];
+    return txt;
+  }
+
+  function renderText(s) {
+    sampleEl.innerHTML = "";
+    chars = s.split('');
+    targetChars = chars.length;
+    chars.forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'char';
+      span.textContent = ch;
+      span.dataset.index = i;
+      sampleEl.appendChild(span);
+    });
+    highlightAt(0);
+  }
+
+  function highlightAt(idx) {
+    const spans = sampleEl.querySelectorAll('.char');
+    spans.forEach((sp) => {
+      sp.classList.remove('current','correct','incorrect');
+    });
+    if(spans[idx]) spans[idx].classList.add('current');
+  }
+
+  function resetState() {
+    clearInterval(timer);
+    started = false;
+    startTime = 0;
+    mistakes = 0;
+    typedChars = 0;
+    totalTime = parseInt(timeSel.value,10);
+    timeEl.textContent = totalTime + 's';
+    wpmEl.textContent = '0';
+    accEl.textContent = '0%';
+    mistEl.textContent = '0';
+    progEl.textContent = '0%';
+    input.value = '';
+    input.disabled = true;
+    msg.textContent = 'Press Start to begin the test.';
+  }
+
+  function startTest() {
+    currentText = pickText();
+    renderText(currentText);
+    resetState();
+    input.disabled = false;
+    input.focus();
+    // Start timer
+    started = true;
+    startTime = Date.now();
+    msg.textContent = 'Test running...';
+    timer = setInterval(updateStats, 200);
+    // For timed mode count down
+    const mode = modeSel.value;
+    if(mode === 'time') {
+      const end = Date.now() + totalTime*1000;
+      const tick = () => {
+        const left = Math.max(0, Math.round((end - Date.now())/1000));
+        timeEl.textContent = left + 's';
+        if(left <= 0){
+          finishTest();
+        }
+      };
+      tick();
+      clearInterval(timer);
+      timer = setInterval(() => { updateStats(); tick(); }, 200);
+    } else {
+      // words mode not implemented separately here (keeps running until full)
+    }
+  }
+
+  function finishTest() {
+    if(!started) return;
+    clearInterval(timer);
+    updateStats();
+    started = false;
+    input.disabled = true;
+    const elapsed = Math.max(1, (Date.now() - startTime)/1000);
+    const charsTyped = typedChars;
+    const words = charsTyped / 5;
+    const wpm = Math.round((words / (elapsed/60)));
+    msg.innerHTML = `Finished — <strong>${Math.round(elapsed)}s</strong>, WPM: <strong>${wpm}</strong>, Mistakes: <strong>${mistakes}</strong>`;
+  }
+
+  function updateStats() {
+    const elapsed = started ? Math.max(1, (Date.now() - startTime)/1000) : 0;
+    const s = input.value;
+    typedChars = s.length;
+    // calculate correctness per char
+    const spans = sampleEl.querySelectorAll('.char');
+    mistakes = 0;
+    let correctCount = 0;
+    for(let i=0;i<spans.length;i++){
+      const span = spans[i];
+      const typedChar = s[i] || '';
+      span.classList.remove('correct','incorrect','current');
+      if(typedChar === '') {
+        // nothing typed here
+      } else if(typedChar === span.textContent) {
+        span.classList.add('correct');
+        correctCount++;
+      } else {
+        span.classList.add('incorrect');
+        mistakes++;
+      }
+    } 
+    // current pointer
+    highlightAt(s.length);
+
+    // WPM based on chars/5 per minute
+    const words = typedChars / 5;
