@@ -5,72 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Typing Test Website</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #111;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
-        #text {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #0f0;
-        }
-        #inputBox {
-            width: 60%;
-            padding: 10px;
-            font-size: 20px;
-        }
-        #result {
-            margin-top: 20px;
-            font-size: 22px;
-            color: #0af;
-        }
-    </style>
+    <link rel="stylesheet" href="Style.css">
 </head>
+
 <body>
-
     <h1>Typing Speed Test</h1>
-    
-    <div id="text">Start typing to begin...</div>
 
-    <input type="text" id="inputBox" placeholder="Start typing here..." autofocus>
+    <div id="test-container">
+        <p id="text">Welcome to typing speed test!</p>
 
-    <div id="result"></div>
+        <textarea id="input" placeholder="Start typing here..."></textarea>
 
-    <script>
-        const sentences = [
-            "Typing speed test website using HTML CSS and JavaScript.",
-            "Your typing speed will be calculated when you finish.",
-            "Practice daily to improve your typing speed and accuracy."
-        ];
-        
-        let sentence = sentences[Math.floor(Math.random() * sentences.length)];
-        document.getElementById("text").innerHTML = sentence;
+        <button onclick="startTest()">Start Test</button>
 
-        let startTime = null;
+        <h2 id="result"></h2>
+    </div>
 
-        document.getElementById("inputBox").addEventListener("input", function () {
-            if (!startTime) startTime = new Date().getTime();
-
-            if (this.value === sentence) {
-                let endTime = new Date().getTime();
-                let timeTaken = (endTime - startTime) / 1000;
-
-                let wpm = Math.round((sentence.split(" ").length / timeTaken) * 60);
-                
-                document.getElementById("result").innerHTML =
-                    "⏱ Time: " + timeTaken + " sec<br>⚡ WPM: " + wpm;
-
-                this.disabled = true;
-            }
-        });
-    </script>
-
+    <script src="Script.js"></script>
 </body>
 </html>
